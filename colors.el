@@ -33,7 +33,7 @@
 ;; HSL colors are represented as lists of three elements for the hue,
 ;; saturation and lightness. Hue is represented as an integer in [0, 360].
 ;; Saturation and lightness are represented as floating point numbers in [0.0,
-;; 1.0].
+;; 1.0] rounded to two decimal places.
 
 ;;; Code:
 
@@ -90,7 +90,7 @@ not represent a HSL color."
          (l (/ (+ cmin cmax) 2)))
     (cond
      ((zerop delta)
-      (list 0 0.0 l))
+      (list 0 0.0 (/ (round (* l 100.0)) 100.0)))
      (t
       (let ((h (cond
                 ((= cmax rf)
@@ -100,7 +100,9 @@ not represent a HSL color."
                 ((= cmax bf)
                  (+ (/ (- rf gf) delta) 4))))
             (s (/ delta (- 1.0 (abs (- (* 2.0 l) 1.0))))))
-        (list (round (* h 60)) s l))))))
+        (list (round (* h 60.0))
+              (/ (round (* s 100.0)) 100.0)
+              (/ (round (* l 100.0)) 100.0)))))))
 
 (defun colors-hsl-to-rgb (color)
   "Convert a HSL color to a RGB color."
