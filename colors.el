@@ -49,14 +49,14 @@ not represent an RGB color."
       (list r g b))))
 
 (defun colors-format-rgb (color)
-  "Return the hexadecimal representation of an RGB color."
+  "Return the hexadecimal representation of the RGB color COLOR."
   (let ((r (nth 0 color))
         (g (nth 1 color))
         (b (nth 2 color)))
     (format "#%02x%02x%02x" r g b)))
 
 (defun colors-parse-hsl (string)
-  "Parse an HSL color string (e.g. \"hsl(180, 20%, 40%)\").
+  "Parse a HSL color string (e.g. \"hsl(180, 20%, 40%)\").
 Return the three HSL components as a list or NIL if STRING does
 not represent a HSL color."
   (when (string-match
@@ -70,14 +70,14 @@ not represent a HSL color."
         (list h s l)))))
 
 (defun colors-format-hsl (color)
-  "Return the representation of a HSL color."
+  "Return the string representation of HSL color COLOR."
   (let ((h (nth 0 color))
         (s (nth 1 color))
         (l (nth 2 color)))
     (format "hsl(%d, %.0f%%, %.0f%%)" h (* s 100.0) (* l 100.0))))
 
 (defun colors-rgb-to-hsl (color)
-  "Convert an RGB color to a HSL color."
+  "Convert the HSL color COLOR to an RGB color."
   (let* ((r (nth 0 color))
          (g (nth 1 color))
          (b (nth 2 color))
@@ -105,7 +105,7 @@ not represent a HSL color."
               (/ (round (* l 100.0)) 100.0)))))))
 
 (defun colors-hsl-to-rgb (color)
-  "Convert a HSL color to a RGB color."
+  "Convert the RGB color COLOR to an HSL color."
   (let* ((h (nth 0 color))
          (s (nth 1 color))
          (l (nth 2 color))
