@@ -65,8 +65,8 @@ not represent a HSL color."
            (s (/ (string-to-number (match-string 2 string)) 100.0))
            (l (/ (string-to-number (match-string 3 string)) 100.0)))
       (when (and (<= 0 h 360)
-                 (<= 0 s 100)
-                 (<= 0 l 100))
+                 (<= 0 s 1.0)
+                 (<= 0 l 1.0))
         (list h s l)))))
 
 (defun colors-format-hsl (color)
