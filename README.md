@@ -1,6 +1,6 @@
 # Colors
 ## Introduction
-This repository contains `colors`, a small Emacs LIsp package providing
+This repository contains `colors`, a small Emacs Lisp package providing
 various functions to manipulate colors.
 
 While Emacs contains a builtin `color` package, it has several shortcomings:
