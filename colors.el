@@ -76,6 +76,55 @@ not represent a HSL color."
         (l (nth 2 color)))
     (format "hsl(%d, %.0f%%, %.0f%%)" h (* s 100.0) (* l 100.0))))
 
+(defun colors-rgb-to-hsl (color)
+  "Convert an RGB color to a HSL color."
+  (let* ((r (nth 0 color))
+         (g (nth 1 color))
+         (b (nth 2 color))
+         (rf (/ r 255.0))
+         (gf (/ g 255.0))
+         (bf (/ b 255.0))
+         (cmin (min rf gf bf))
+         (cmax (max rf gf bf))
+         (delta (- cmax cmin))
+         (l (/ (+ cmin cmax) 2)))
+    (cond
+     ((zerop delta)
+      (list 0 0.0 l))
+     (t
+      (let ((h (cond
+                ((= cmax rf)
+                 (mod (/ (- gf bf) delta) 6))
+                ((= cmax gf)
+                 (+ (/ (- bf rf) delta) 2))
+                ((= cmax bf)
+                 (+ (/ (- rf gf) delta) 4))))
+            (s (/ delta (- 1.0 (abs (- (* 2.0 l) 1.0))))))
+        (list (round (* h 60)) s l))))))
+
+(defun colors-hsl-to-rgb (color)
+  "Convert a HSL color to a RGB color."
+  (let* ((h (nth 0 color))
+         (s (nth 1 color))
+         (l (nth 2 color))
+         (c (* (- 1.0 (abs (- (* 2.0 l) 1.0))) s))
+         (x (* c (- 1.0 (abs (- (mod (/ h 60.0) 2.0) 1.0)))))
+         (m (- l (/ c 2.0)))
+         (rgb (cond
+               ((<=   0 h 59)
+                (list c x 0.0))
+               ((<=  60 h 119)
+                (list x c 0.0))
+               ((<= 120 h 179)
+                (list 0.0 c x))
+               ((<= 180 h 239)
+                (list 0.0 x c))
+               ((<= 240 h 299)
+                (list x 0.0 c))
+               ((<= 300 h 359)
+                (list c 0.0 x)))))
+    (mapcar (lambda (v) (round (* (+ v m) 255.0))) rgb)))
+
 (provide 'colors)
 
 ;;; colors.el ends here
