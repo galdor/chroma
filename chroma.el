@@ -1,7 +1,7 @@
-;;; colors.el --- Color manipulation library -*- lexical-binding: t -*-
+;;; chroma.el --- Color manipulation library -*- lexical-binding: t -*-
 
 ;; Author: Nicolas Martyanoff <nicolas@n16f.net>
-;; URL: https://github.com/galdor/colors
+;; URL: https://github.com/galdor/chroma
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "24.1"))
 
@@ -22,7 +22,7 @@
 ;;; Commentary:
 
 ;; This package provides utilities to manipulate colors. Compared to the
-;; built-in color.el, colors.el uses provides a consistent interface, always
+;; built-in color.el, chroma.el uses provides a consistent interface, always
 ;; accepting and returning colors as lists. It also uses commonly used
 ;; representation for components: 8 bit values for RGB colors, 0-360 hue for
 ;; HSL colors.
@@ -37,7 +37,7 @@
 
 ;;; Code:
 
-(defun colors-parse-rgb (string)
+(defun chroma-parse-rgb (string)
   "Parse an hexadecimal RGB color string (e.g. \"#204080\").
 Return the three RGB components as a list or NIL if STRING does
 not represent an RGB color."
@@ -48,14 +48,14 @@ not represent an RGB color."
            (b (string-to-number (substring digits 4 6) 16)))
       (list r g b))))
 
-(defun colors-format-rgb (color)
+(defun chroma-format-rgb (color)
   "Return the hexadecimal representation of the RGB color COLOR."
   (let ((r (nth 0 color))
         (g (nth 1 color))
         (b (nth 2 color)))
     (format "#%02x%02x%02x" r g b)))
 
-(defun colors-parse-hsl (string)
+(defun chroma-parse-hsl (string)
   "Parse a HSL color string (e.g. \"hsl(180, 20%, 40%)\").
 Return the three HSL components as a list or NIL if STRING does
 not represent a HSL color."
@@ -69,14 +69,14 @@ not represent a HSL color."
                  (<= 0 l 1.0))
         (list h s l)))))
 
-(defun colors-format-hsl (color)
+(defun chroma-format-hsl (color)
   "Return the string representation of HSL color COLOR."
   (let ((h (nth 0 color))
         (s (nth 1 color))
         (l (nth 2 color)))
     (format "hsl(%d, %.0f%%, %.0f%%)" h (* s 100.0) (* l 100.0))))
 
-(defun colors-rgb-to-hsl (color)
+(defun chroma-rgb-to-hsl (color)
   "Convert the HSL color COLOR to an RGB color."
   (let* ((r (nth 0 color))
          (g (nth 1 color))
@@ -104,7 +104,7 @@ not represent a HSL color."
               (/ (round (* s 100.0)) 100.0)
               (/ (round (* l 100.0)) 100.0)))))))
 
-(defun colors-hsl-to-rgb (color)
+(defun chroma-hsl-to-rgb (color)
   "Convert the RGB color COLOR to an HSL color."
   (let* ((h (nth 0 color))
          (s (nth 1 color))
@@ -127,6 +127,6 @@ not represent a HSL color."
                 (list c 0.0 x)))))
     (mapcar (lambda (v) (round (* (+ v m) 255.0))) rgb)))
 
-(provide 'colors)
+(provide 'chroma)
 
-;;; colors.el ends here
+;;; chroma.el ends here

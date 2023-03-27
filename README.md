@@ -1,10 +1,10 @@
-# Colors
+# Chroma
 
-[![MELPA Stable](https://stable.melpa.org/packages/colors-badge.svg)](https://stable.melpa.org/#/colors)
-[![MELPA](https://melpa.org/packages/colors-badge.svg)](https://melpa.org/#/colors)
+[![MELPA Stable](https://stable.melpa.org/packages/chroma-badge.svg)](https://stable.melpa.org/#/chroma)
+[![MELPA](https://melpa.org/packages/chroma-badge.svg)](https://melpa.org/#/chroma)
 
 ## Introduction
-This repository contains `colors`, a small Emacs Lisp package providing
+This repository contains `chroma`, a small Emacs Lisp package providing
 various functions to manipulate colors.
 
 While Emacs contains a builtin `color` package, it has several shortcomings:
@@ -17,10 +17,10 @@ While Emacs contains a builtin `color` package, it has several shortcomings:
 - Results are not what you would expect. For example converting `#cc241d` to
   HSL yields a hue of 0.006666666666666636 (e.g. 0°) instead of 2°.
   
-The `colors` package aims to be easier to use.
+The `chroma` package aims to be easier to use.
 
 ## Licensing
-The `colors` package is open source software distributed under the
+The `chroma` package is open source software distributed under the
 [ISC](https://opensource.org/licenses/ISC) license.
 
 ## Contact
