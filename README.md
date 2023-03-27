@@ -1,4 +1,8 @@
 # Colors
+
+[![MELPA Stable](https://stable.melpa.org/packages/colors-badge.svg)](https://stable.melpa.org/#/colors)
+[![MELPA](https://melpa.org/packages/colors-badge.svg)](https://melpa.org/#/colors)
+
 ## Introduction
 This repository contains `colors`, a small Emacs Lisp package providing
 various functions to manipulate colors.
