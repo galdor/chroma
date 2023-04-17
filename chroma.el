@@ -48,12 +48,13 @@
   "Parse an hexadecimal RGB color string (e.g. \"#204080\").
 Return the three RGB components as a list or NIL if STRING does
 not represent an RGB color."
-  (when (string-match (chroma--anchored-regexp chroma-rgb-regexp) string)
-    (let* ((digits (match-string 1 string))
-           (r (string-to-number (substring digits 0 2) 16))
-           (g (string-to-number (substring digits 2 4) 16))
-           (b (string-to-number (substring digits 4 6) 16)))
-      (list r g b))))
+  (if (string-match (chroma--anchored-regexp chroma-rgb-regexp) string)
+      (let* ((digits (match-string 1 string))
+             (r (string-to-number (substring digits 0 2) 16))
+             (g (string-to-number (substring digits 2 4) 16))
+             (b (string-to-number (substring digits 4 6) 16)))
+        (list r g b))
+    (error "Invalid RGB color %S" string)))
 
 (defun chroma-format-rgb (color)
   "Return the hexadecimal representation of an RGB color."
@@ -66,14 +67,16 @@ not represent an RGB color."
   "Parse a HSL color string (e.g. \"hsl(180, 20%, 40%)\").
 Return the three HSL components as a list or NIL if STRING does
 not represent a HSL color."
-  (when (string-match (chroma--anchored-regexp chroma-hsl-regexp) string)
-    (let* ((h (string-to-number (match-string 1 string)))
-           (s (/ (string-to-number (match-string 2 string)) 100.0))
-           (l (/ (string-to-number (match-string 3 string)) 100.0)))
-      (when (and (<= 0 h 360)
+  (if (string-match (chroma--anchored-regexp chroma-hsl-regexp) string)
+      (let* ((h (string-to-number (match-string 1 string)))
+             (s (/ (string-to-number (match-string 2 string)) 100.0))
+             (l (/ (string-to-number (match-string 3 string)) 100.0)))
+        (if (and (<= 0 h 360)
                  (<= 0 s 1.0)
                  (<= 0 l 1.0))
-        (list h s l)))))
+            (list h s l)
+          (error "Invalid HSL color components %S" (list h s l))))
+    (error "Invalid HSL color %S" string)))
 
 (defun chroma-format-hsl (color)
   "Return the string representation of an HSL color."

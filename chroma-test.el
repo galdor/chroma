@@ -32,7 +32,7 @@
   (should (equal (chroma-parse-rgb "#000000") '(0 0 0)))
   (should (equal (chroma-parse-rgb "#102040") '(16 32 64)))
   (should (equal (chroma-parse-rgb "#ffffff") '(255 255 255)))
-  (should (equal (chroma-parse-rgb "123456") nil)))
+  (should-error (chroma-parse-rgb "123456")))
 
 (ert-deftest chroma-format-rgb ()
   (should (equal (chroma-format-rgb '(0 0 0)) "#000000"))
@@ -43,10 +43,10 @@
   (should (equal (chroma-parse-hsl "hsl(0,0%,0%)") '(0 0.0 0.0)))
   (should (equal (chroma-parse-hsl "hsl(0, 50%, 100%)") '(0 0.5 1.0)))
   (should (equal (chroma-parse-hsl "hsl(360, 20%, 40%)") '(360 0.2 0.4)))
-  (should (equal (chroma-parse-hsl "hsl(420, 20%, 40%)") nil))
-  (should (equal (chroma-parse-hsl "hsl(180, 200%, 0%)") nil))
-  (should (equal (chroma-parse-hsl "hsl(180, 10%, 150%)") nil))
-  (should (equal (chroma-parse-hsl "1, 2, 3") nil)))
+  (should-error (chroma-parse-hsl "hsl(420, 20%, 40%)"))
+  (should-error (chroma-parse-hsl "hsl(180, 200%, 0%)"))
+  (should-error (chroma-parse-hsl "hsl(180, 10%, 150%)"))
+  (should-error (chroma-parse-hsl "1, 2, 3")))
 
 (ert-deftest chroma-format-hsl ()
   (should (equal (chroma-format-hsl '(0 0.0 0.0)) "hsl(0, 0%, 0%)"))
