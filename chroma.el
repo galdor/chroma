@@ -56,7 +56,7 @@ not represent an RGB color."
       (list r g b))))
 
 (defun chroma-format-rgb (color)
-  "Return the hexadecimal representation of the RGB color COLOR."
+  "Return the hexadecimal representation of an RGB color."
   (let ((r (nth 0 color))
         (g (nth 1 color))
         (b (nth 2 color)))
@@ -76,14 +76,14 @@ not represent a HSL color."
         (list h s l)))))
 
 (defun chroma-format-hsl (color)
-  "Return the string representation of HSL color COLOR."
+  "Return the string representation of an HSL color."
   (let ((h (nth 0 color))
         (s (nth 1 color))
         (l (nth 2 color)))
     (format "hsl(%d, %.0f%%, %.0f%%)" h (* s 100.0) (* l 100.0))))
 
 (defun chroma-rgb-to-hsl (color)
-  "Convert the HSL color COLOR to an RGB color."
+  "Convert an HSL color to an RGB color."
   (let* ((r (nth 0 color))
          (g (nth 1 color))
          (b (nth 2 color))
@@ -111,7 +111,7 @@ not represent a HSL color."
               (/ (round (* l 100.0)) 100.0)))))))
 
 (defun chroma-hsl-to-rgb (color)
-  "Convert the RGB color COLOR to an HSL color."
+  "Convert an RGB color to an HSL color."
   (let* ((h (nth 0 color))
          (s (nth 1 color))
          (l (nth 2 color))
