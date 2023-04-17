@@ -37,11 +37,18 @@
 
 ;;; Code:
 
+(defvar chroma-rgb-regexp "#\\([0-9A-Za-z]\\{6\\}\\)"
+  "The regular expression used to match hexadecimal RGB colors.")
+
+(defvar chroma-hsl-regexp
+  "hsl( *\\([0-9]+\\) *, *\\([0-9]+\\)% *, *\\([0-9]+\\)% *)"
+  "The regular expression used to match HSL colors.")
+
 (defun chroma-parse-rgb (string)
   "Parse an hexadecimal RGB color string (e.g. \"#204080\").
 Return the three RGB components as a list or NIL if STRING does
 not represent an RGB color."
-  (when (string-match "^#\\([0-9A-Za-z]\\{6\\}\\)$" string)
+  (when (string-match (chroma--anchored-regexp chroma-rgb-regexp) string)
     (let* ((digits (match-string 1 string))
            (r (string-to-number (substring digits 0 2) 16))
            (g (string-to-number (substring digits 2 4) 16))
@@ -59,8 +66,7 @@ not represent an RGB color."
   "Parse a HSL color string (e.g. \"hsl(180, 20%, 40%)\").
 Return the three HSL components as a list or NIL if STRING does
 not represent a HSL color."
-  (when (string-match
-         "^hsl( *\\([0-9]+\\) *, *\\([0-9]+\\)% *, *\\([0-9]+\\)% *)$" string)
+  (when (string-match (chroma--anchored-regexp chroma-hsl-regexp) string)
     (let* ((h (string-to-number (match-string 1 string)))
            (s (/ (string-to-number (match-string 2 string)) 100.0))
            (l (/ (string-to-number (match-string 3 string)) 100.0)))
@@ -126,6 +132,10 @@ not represent a HSL color."
                ((<= 300 h 359)
                 (list c 0.0 x)))))
     (mapcar (lambda (v) (round (* (+ v m) 255.0))) rgb)))
+
+(defun chroma--anchored-regexp (regexp)
+  "Return a the fully anchored version of REGEXP."
+  (concat "^" regexp "$"))
 
 (provide 'chroma)
 
