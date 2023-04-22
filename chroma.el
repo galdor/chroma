@@ -136,6 +136,35 @@ not represent a HSL color."
                 (list c 0.0 x)))))
     (mapcar (lambda (v) (round (* (+ v m) 255.0))) rgb)))
 
+(defun chroma--color-at-point-function (regexp parsing-fn)
+  "Return a function which identifies and return a color at a
+specific position. The color is identified with REGEXP and parsed
+with PARSING-FN."
+  (lambda (point)
+    (save-excursion
+      (goto-char point)
+      (let ((line-start (line-beginning-position))
+            (line-end (line-end-position)))
+        (goto-char line-start)
+        (catch 'color
+          (while (re-search-forward regexp line-end t)
+            (let ((match-start (match-beginning 0))
+                  (match-end (match-end 0)))
+              (when (<= match-start point match-end)
+                (let ((string (buffer-substring-no-properties
+                               match-start match-end)))
+                  (throw 'color (funcall parsing-fn string)))))))))))
+
+(defalias 'chroma-rgb-color-at-point
+  (chroma--color-at-point-function chroma-rgb-regexp 'chroma-parse-rgb)
+  "Return the RGB color at POINT or NIL if POINT is not positioned
+on a RGB color.")
+
+(defalias 'chroma-hsl-color-at-point
+  (chroma--color-at-point-function chroma-hsl-regexp 'chroma-parse-hsl)
+  "Return the HSL color at POINT or NIL if POINT is not positioned
+on a HSL color.")
+
 (defun chroma--anchored-regexp (regexp)
   "Return a the fully anchored version of REGEXP."
   (concat "^" regexp "$"))
