@@ -113,6 +113,12 @@ not represent a HSL color."
               (/ (round (* s 100.0)) 100.0)
               (/ (round (* l 100.0)) 100.0)))))))
 
+(defun chroma-rgb-string-to-hsl-string (string)
+  "Convert an HSL color string to an RGB color string."
+  (chroma-format-hsl
+   (chroma-rgb-to-hsl
+    (chroma-parse-rgb string))))
+
 (defun chroma-hsl-to-rgb (color)
   "Convert an RGB color to an HSL color."
   (let* ((h (nth 0 color))
@@ -136,10 +142,13 @@ not represent a HSL color."
                 (list c 0.0 x)))))
     (mapcar (lambda (v) (round (* (+ v m) 255.0))) rgb)))
 
-(defun chroma--color-at-point-function (regexp parsing-fn)
-  "Return a function which identifies and return a color at a
-specific position. The color is identified with REGEXP and parsed
-with PARSING-FN."
+(defun chroma-hsl-string-to-rgb-string (string)
+  "Convert an RGB color string to an HSL color string."
+  (chroma-format-rgb
+   (chroma-hsl-to-rgb
+    (chroma-parse-hsl string))))
+
+(defun chroma--color-string-at-point-function (regexp)
   (lambda (point)
     (save-excursion
       (goto-char point)
@@ -151,19 +160,36 @@ with PARSING-FN."
             (let ((match-start (match-beginning 0))
                   (match-end (match-end 0)))
               (when (<= match-start point match-end)
-                (let ((string (buffer-substring-no-properties
-                               match-start match-end)))
-                  (throw 'color (funcall parsing-fn string)))))))))))
+                (let ((color-string (buffer-substring-no-properties
+                                     match-start match-end)))
+                  (throw 'color
+                         (list color-string match-start match-end)))))))))))
+
+(defun chroma--color-at-point-function (regexp parsing-fn)
+  (lambda (point)
+    (cl-multiple-value-bind (string start end)
+        (funcall (chroma--color-string-at-point-function regexp) point)
+      (list (funcall parsing-fn string) start end))))
 
 (defalias 'chroma-rgb-color-at-point
   (chroma--color-at-point-function chroma-rgb-regexp 'chroma-parse-rgb)
-  "Return the RGB color at POINT or NIL if POINT is not positioned
-on a RGB color.")
+  "Return a list containing the value, start and end of the RGB
+color at POINT or NIL if POINT is not positioned on a RGB color.")
+
+(defalias 'chroma-rgb-color-string-at-point
+  (chroma--color-string-at-point-function chroma-rgb-regexp)
+  "Return a list containing the string, start and end of the RGB
+color at POINT or NIL if POINT is not positioned on a RGB color.")
 
 (defalias 'chroma-hsl-color-at-point
   (chroma--color-at-point-function chroma-hsl-regexp 'chroma-parse-hsl)
-  "Return the HSL color at POINT or NIL if POINT is not positioned
-on a HSL color.")
+  "Return a list containing the value, start and end of the HSL
+color at POINT or NIL if POINT is not positioned on a HSL color.")
+
+(defalias 'chroma-hsl-color-string-at-point
+  (chroma--color-string-at-point-function chroma-hsl-regexp)
+  "Return a list containing the string, start and end of the HSL
+color at POINT or NIL if POINT is not positioned on a HSL color.")
 
 (defun chroma--anchored-regexp (regexp)
   "Return a the fully anchored version of REGEXP."
