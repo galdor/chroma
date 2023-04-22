@@ -191,9 +191,64 @@ color at POINT or NIL if POINT is not positioned on a HSL color.")
   "Return a list containing the string, start and end of the HSL
 color at POINT or NIL if POINT is not positioned on a HSL color.")
 
+(defun chroma--color-conversion-dwim-function (regexp color-string-at-point-fn
+                                                      color-conversion-fn)
+  (lambda (start end)
+    (interactive "r")
+    (chroma--with-undo-amalgamate
+     (cond
+      ((use-region-p)
+       (save-restriction
+         (narrow-to-region start end)
+         (goto-char (point-min))
+         (while (re-search-forward regexp (point-max) t)
+           (let ((match-start (match-beginning 0))
+                 (match-end (match-end 0))
+                 (color-string (match-string-no-properties 0)))
+             (replace-region-contents (match-beginning 0) (match-end 0)
+                                      (lambda ()
+                                        (funcall color-conversion-fn
+                                                 color-string)))))))
+      (t
+       (cl-multiple-value-bind (color-string start end)
+           (funcall color-string-at-point-fn (point))
+         (replace-region-contents start end
+                                  (lambda ()
+                                    (funcall color-conversion-fn
+                                             color-string)))))))))
+
+(defalias 'chroma-hsl-to-rgb-dwim
+  (chroma--color-conversion-dwim-function chroma-hsl-regexp
+                                          'chroma-hsl-color-string-at-point
+                                          'chroma-hsl-string-to-rgb-string)
+  "Convert HSL colors to RGB colors either in the current region if
+it is active or undeer the point if it is not.")
+
+(defalias 'chroma-rgb-to-hsl-dwim
+  (chroma--color-conversion-dwim-function chroma-rgb-regexp
+                                          'chroma-rgb-color-string-at-point
+                                          'chroma-rgb-string-to-hsl-string)
+  "Convert RGB colors to HSL colors either in the current region if
+it is active or undeer the point if it is not.")
+
 (defun chroma--anchored-regexp (regexp)
   "Return a the fully anchored version of REGEXP."
   (concat "^" regexp "$"))
+
+(defmacro chroma--with-undo-amalgamate (&rest body)
+  "Evaluate BODY as a single undo group. To be replaced by
+`with-undo-amalgamate' once Emacs 29 is released."
+  (let ((handle (make-symbol "--handle--")))
+    `(let ((,handle (prepare-change-group))
+           (undo-outer-limit nil)
+           (undo-limit most-positive-fixnum)
+           (undo-strong-limit most-positive-fixnum))
+       (unwind-protect
+           (progn
+             (activate-change-group ,handle)
+             ,@body)
+         (accept-change-group ,handle)
+         (undo-amalgamate-change-group ,handle)))))
 
 (provide 'chroma)
 
