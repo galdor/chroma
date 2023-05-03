@@ -1,6 +1,7 @@
 ;;; chroma-test.el --- Tests for the chroma package -*- lexical-binding: t -*-
 
 ;; Author: Nicolas Martyanoff <nicolas@n16f.net>
+;; SPDX-License-Identifier: ISC
 ;; URL: https://github.com/galdor/chroma
 ;; Version: 1.0.0
 ;; Package-Requires: ((emacs "24.1"))
